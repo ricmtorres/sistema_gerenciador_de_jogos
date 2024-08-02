@@ -11,3 +11,5 @@ Campos do modelo:
 - Dashboard para visualizar 
 - Administração de contas 
 - Segurança da informação
+
+![registro](https://github.com/user-attachments/assets/3558f6f2-7a35-40ba-bed0-6e153b5901ad)

@@ -3,129 +3,162 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+<style>
+    body {
+        background-color: {{ cor_favorita }};
+    }
+</style>
 <div class="container mt-5">
-	<h1 class="display-4">Bem-vindo, {{ usuario.nome }}</h1>
-	<div class="mb-3 d-flex">
-		{% if usuario.is_admin %}
-		<a href="{% url 'listar_usuarios' %}" class="btn btn-primary mr-2">Listar Usuários</a>
-		{% else %}
-		<a href="{% url 'adicionar_produto' %}" class="btn btn-primary mr-2">Adicionar Jogos</a>
-		{% endif %}
-		<a href="{% url 'mudar_senha' %}" class="btn btn-secondary ms-2">Alterar Senha</a>
-		<a href="{% url 'logout' %}" class="btn btn-danger btn-sm ms-auto">Logout</a>
-	</div>
+    <h1 class="display-4">Bem-vindo, {{ usuario.nome }}</h1>
+    <div class="mb-3 d-flex">
+        {% if usuario.is_admin %}
+        <a href="{% url 'listar_usuarios' %}" class="btn btn-primary mr-2">Listar Usuários</a>
+        {% else %}
+        <a href="{% url 'adicionar_produto' %}" class="btn btn-primary mr-2">Adicionar Jogos</a>
+        {% endif %}
+        <a href="{% url 'mudar_senha' %}" class="btn btn-secondary ms-2">Alterar Senha</a>
+        <a href="{% url 'logout' %}" class="btn btn-danger btn-sm ms-auto">Logout</a>
+        <button type="button" class="btn btn-info ms-2" data-bs-toggle="modal" data-bs-target="#personalizarModal">Personalizar</button>
+    </div>
 </div>
 
 {% if usuario.is_admin %}
 <h2>Dashboard Administrativa</h2>
 <div class="row text-center">
-	<div class="col-md-4 ">
-		<div class="card text-white bg-primary mb-4">
-			<div class="card-body">
-				<h5 class="card-title">Total de Usuários</h5>
-				<p class="card-text">{{ total_usuarios }}</p>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="card text-white bg-success mb-4">
-			<div class="card-body">
-				<h5 class="card-title">Usuários Ativos</h5>
-				<p class="card-text">{{ usuarios_ativos }}</p>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="card text-white bg-secondary mb-4">
-			<div class="card-body">
-				<h5 class="card-title">Usuários Inativos</h5>
-				<p class="card-text">{{ usuarios_inativos }}</p>
-			</div>
-		</div>
-	</div>
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Total de Usuários</h5>
+                <p class="card-text">{{ total_usuarios }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Usuários Ativos</h5>
+                <p class="card-text">{{ usuarios_ativos }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-secondary mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Usuários Inativos</h5>
+                <p class="card-text">{{ usuarios_inativos }}</p>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="card mb-4 offset-4 text-center" style="width: 18rem;">
-	<div class="card-header bg-primary-subtle">
-		Últimos 3 Usuários Adicionados
-	</div>
-	<ul class="list-group list-group-flush">
-		{% for usuario in ultimos_usuarios %}
-		<li class="list-group-item">
-			<strong>{{ usuario.nome }}</strong> - {{ usuario.email }} <br><small class="text-body-secondary">Criado em: {{ usuario.criado_em }}</small>
-		</li>
-		{% endfor %}
-	</ul>
+    <div class="card-header bg-primary-subtle">
+        Últimos 3 Usuários Adicionados
+    </div>
+    <ul class="list-group list-group-flush">
+        {% for usuario in ultimos_usuarios %}
+        <li class="list-group-item">
+            <strong>{{ usuario.nome }}</strong> - {{ usuario.email }} <br><small class="text-body-secondary">Criado em: {{ usuario.criado_em }}</small>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 {% else %}
 
 <form class="container mb-3 px-2 bg-primary-subtle rounded">
-	<h2>Buscar Jogos</h2>
-	<input type="text" name="q" placeholder="Buscar por nome, preço ou descrição" class="form-control my-2">
-	<input type="number" name="quantidade" placeholder="Buscar por quantidade" class="form-control my-2">
-	<button type="submit" class="btn btn-dark mb-2">Buscar</button>
+    <h2>Buscar Jogos</h2>
+    <input type="text" name="q" placeholder="Buscar por nome, preço ou descrição" class="form-control my-2">
+    <input type="number" name="quantidade" placeholder="Buscar por quantidade" class="form-control my-2">
+    <button type="submit" class="btn btn-dark mb-2">Buscar</button>
 </form>
-<div class="container row mx-auto ">
-	<h2>Seus Jogos</h2>
-	{% for produto in produtos %}
-	<div class="card mb-2 pt-2 bg-primary-subtle" style="max-width: 700px; max-height: 300px;">
-		<div class="row g-1">
-			<div class="col-md-4">
-				{% if produto.imagem %}
-				<a type="button" data-bs-toggle="modal" data-bs-target="#modal{{ produto.id }}">
-					<img src="data:image/png;base64,{{ produto.thumbnail }}" class="img-fluid rounded-start"
-					     alt="foto de {{ produto.nome }}">
-				</a>
-				{% else %}
-				<a type="button" data-bs-toggle="modal" data-bs-target="#modal{{ produto.id }}">
-					<img src="https://robohash.org/{{ produto.nome }}?set=set4&size=300x300" class="card-img-top"
-					     alt="foto de {{ produto.nome }}">
-				</a>
-				{% endif %}
-			</div>
-			<div class="col-md-8">
-				<div class="card-body d-flex flex-column">
-					<h5 class="card-title fs-1">{{ produto.nome }}</h5>
-					<p class="card-text">Quantidade: {{ produto.quantidade }}<br>Preço: R${{ produto.preco }}</p>
-					<p class="card-text mt-auto"><small class="text-body-secondary">Ultíma atualização: {{ produto.modificado_em }}</small></p>
-					<div class="mt-auto ms-auto">
-						<a href="{% url 'editar_produto' produto.id %}" class="btn btn-secondary">Editar</a>
-						<a href="{% url 'excluir_produto' produto.id %}" class="btn btn-danger ms-2">Excluir</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container row mx-auto">
+    <h2>Seus Jogos</h2>
+    {% for produto in produtos %}
+    <div class="card mb-2 pt-2 bg-primary-subtle" style="max-width: 700px; max-height: 300px;">
+        <div class="row g-1">
+            <div class="col-md-4">
+                {% if produto.imagem %}
+                <a type="button" data-bs-toggle="modal" data-bs-target="#modal{{ produto.id }}">
+                    <img src="data:image/png;base64,{{ produto.thumbnail }}" class="img-fluid rounded-start"
+                         alt="foto de {{ produto.nome }}">
+                </a>
+                {% else %}
+                <a type="button" data-bs-toggle="modal" data-bs-target="#modal{{ produto.id }}">
+                    <img src="https://robohash.org/{{ produto.nome }}?set=set4&size=300x300" class="card-img-top"
+                         alt="foto de {{ produto.nome }}">
+                </a>
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fs-1">{{ produto.nome }}</h5>
+                    <p class="card-text">Quantidade: {{ produto.quantidade }}<br>Preço: R${{ produto.preco }}</p>
+                    <p class="card-text mt-auto"><small class="text-body-secondary">Ultíma atualização: {{ produto.modificado_em }}</small></p>
+                    <div class="mt-auto ms-auto">
+                        <a href="{% url 'editar_produto' produto.id %}" class="btn btn-secondary">Editar</a>
+                        <a href="{% url 'excluir_produto' produto.id %}" class="btn btn-danger ms-2">Excluir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<!-- modal -->
-	<div class="modal fade" id="modal{{ produto.id }}" tabindex="-1" role="dialog"
-	     aria-labelledby="modalLabel{{ produto.id }}" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" aria-labelledby="modalLabel{{ produto.id }}">{{ produto.nome }}</h5>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<p><strong>Nome: </strong>{{ produto.nome }}</p>
-					{% if produto.imagem %}
-					<img src="data:image/png;base64,{{ produto.imagem }}" class="card-img-top"
-					     alt="foto de {{ produto.nome }}">
-					{% else %}
-					<img src="https://robohash.org/{{ produto.nome }}?set=set4&size500x500" class="card-img-top"
-					     alt="foto de {{ produto.nome }}">
-					{% endif %}
-					<p>{{ produto.descricao }}</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <!-- modal -->
+    <div class="modal fade" id="modal{{ produto.id }}" tabindex="-1" role="dialog"
+         aria-labelledby="modalLabel{{ produto.id }}" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" aria-labelledby="modalLabel{{ produto.id }}">{{ produto.nome }}</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Nome: </strong>{{ produto.nome }}</p>
+                    {% if produto.imagem %}
+                    <img src="data:image/png;base64,{{ produto.imagem }}" class="card-img-top"
+                         alt="foto de {{ produto.nome }}">
+                    {% else %}
+                    <img src="https://robohash.org/{{ produto.nome }}?set=set4&size500x500" class="card-img-top"
+                         alt="foto de {{ produto.nome }}">
+                    {% endif %}
+                    <p>{{ produto.descricao }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	{% endfor %}
+    {% endfor %}
 </div>
 {% endif %}
+
+<!-- Personalização Modal -->
+<div class="modal fade" id="personalizarModal" tabindex="-1" role="dialog" aria-labelledby="personalizarModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="personalizarModalLabel">Personalizar Cor de Fundo</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'personalizar' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="cor_favorita">Escolha a cor de fundo da sua página:</label>
+                        <input type="color" id="cor_favorita" name="cor_favorita" class="form-control" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

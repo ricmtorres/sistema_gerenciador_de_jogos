@@ -16,4 +16,5 @@ urlpatterns = [
     path('admin/desativar/<int:usuario_id>', views.desativar_usuario, name='desativar_usuario'),
     path('admin/reativar/<int:usuario_id>', views.reativar_usuario, name='reativar_usuario'),
     path('admin/excluir/<int:usuario_id>', views.excluir_usuario, name='excluir_usuario'),
+    path('personalizar', views.personalizar, name='personalizar'),
 ]

@@ -206,24 +206,22 @@ def dashboard(request):
     if usuario_id:
         query = request.GET.get('q')
         usuario = Usuario.objects.defer('password').get(id=usuario_id)
+        cor_favorita = request.session.get('cor_favorita', '#376b49')  # Cor padrão se não estiver definida
+
         if usuario.is_admin:
             total_usuarios = Usuario.objects.filter(is_admin=False).count()
             usuarios_ativos = Usuario.objects.filter(is_admin=False, is_active=True).count()
             usuarios_inativos = total_usuarios - usuarios_ativos
             ultimos_usuarios = Usuario.objects.filter(is_admin=False).order_by('-criado_em')[:3]
 
-            '''context = {
+            return render(request, 'produtos/dashboard.html', {
                 'usuario': usuario,
                 'total_usuarios': total_usuarios,
                 'usuarios_ativos': usuarios_ativos,
                 'usuarios_inativos': usuarios_inativos,
-                'ultimos_usuarios': ultimos_usuarios
-            }'''
-            return render(request, 'produtos/dashboard.html', {'usuario': usuario,
-                                                               'total_usuarios': total_usuarios,
-                                                               'usuarios_ativos': usuarios_ativos,
-                                                               'usuarios_inativos': usuarios_inativos,
-                                                               'ultimos_usuarios': ultimos_usuarios})
+                'ultimos_usuarios': ultimos_usuarios,
+                'cor_favorita': cor_favorita
+            })
 
         else:
             quantidade = request.GET.get('quantidade')
@@ -238,11 +236,11 @@ def dashboard(request):
             if quantidade:
                 produtos = produtos.filter(Q(quantidade=quantidade))
 
-            '''context = {
+            return render(request, 'produtos/dashboard.html', {
                 'usuario': usuario,
-                'produtos': produtos
-            }'''
-            return render(request, 'produtos/dashboard.html', {'usuario': usuario, 'produtos': produtos})
+                'produtos': produtos,
+                'cor_favorita': cor_favorita
+            })
     else:
         return redirect('login')
 
@@ -360,3 +358,15 @@ def mudar_senha(request):
 def logout(request):
     request.session.flush()
     return redirect('login')
+
+
+def personalizar(request):
+    if request.method == 'POST':
+        cor_favorita = request.POST.get('cor_favorita')
+        request.session['cor_favorita'] = cor_favorita
+        response = redirect('dashboard')
+        response.set_cookie('cor_favorita', cor_favorita, max_age=3600)
+        return response
+    return render(request, 'biblioteca/personalizar.html')
+
+

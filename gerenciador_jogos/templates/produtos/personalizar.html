@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Personalizar</title>
+</head>
+<body>
+<h1>Personalizar</h1>
+<form method="post">
+    {% csrf_token %}
+    <label for="cor_favorita">Escolha a cor de fundo da sua página: </label>
+    <input type="color" id="cor_favorita" name="cor_favorita" required>
+    <button type="submit">Dashboard</button>
+</form>
+</body>
+</html>

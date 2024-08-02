@@ -12,6 +12,7 @@ class Usuario(models.Model):
     criado_em = models.DateTimeField(auto_now_add=True)
     modificado_em = models.DateTimeField(auto_now=True)
     token = models.CharField(max_length=255, default='', blank=True)
+    cor_favorita = models.CharField(max_length=7, default='#376b49')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['nome', 'password']

@@ -17,3 +17,6 @@ Campos do modelo:
 ![dashboard do usuario](https://github.com/user-attachments/assets/f7a04e37-69d2-49bd-b0d5-503079840238)
 
 ![dashboard_admin](https://github.com/user-attachments/assets/9699647f-b3cb-4eb6-b307-68a4147cdfed)
+
+
+![Diagrama jogos nome drawio](https://github.com/user-attachments/assets/f109d195-9605-4d4b-b6fe-b6daee7632d4)
